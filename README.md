@@ -45,3 +45,4 @@ Todo
   * port to Javascript/Node
   * include pdf to text conversion as a library (pdf2json in npm?)
   * publish a tool to use the data
+  * link to other tools for parsing Osuuspankki data, there seems to be at least a couple of those
