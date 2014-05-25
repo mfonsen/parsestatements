@@ -9,10 +9,9 @@ If you find this useful or have any thoughts, please contact me: http://iki.fi/m
 
 Known issues
 ------------
-  * 
   * in my test material, I don't have all possible transaction types. These need to be added manually. 
     * At least in S-Pankki it's possible to add custom types that replace actual transaction type. This makes it quite hard to detect the correct type.
-  * originally developed in Ubuntu, later only in OSX
+  * originally tested in Ubuntu, later only in OSX
 
 Usage
 -----
