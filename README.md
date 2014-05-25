@@ -28,7 +28,7 @@ Prerequisites
     * S-Pankki
       * statements in text format as parsed by pdftotext tool (see below)
 
-<code>python statementparser.py '<source directory, will be handled recursively>' '<output file in json>'</code>
+<code>python statementparser.py 'source directory, will be handled recursively' 'output file in json'</code>
 
 Using pdftotext to convert S-Pankki PDF-files to text
 -----------------------------------------------------
