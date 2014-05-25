@@ -1,15 +1,15 @@
 parsestatements
 ===============
 
-For parsing Finnish Osuuspankki (CSV, transactions only) and S-Pankki (PDF) statements to JSON. 
+For parsing Finnish Osuuspankki (CSV, transactions only) and S-Pankki (PDF) statements to JSON. This is a tool that works for me, no much effort has been done beyond that goal.
 
-Summary in Finnish: Osuuspankin (CSV, vain tilitapahtumat) ja S-Pankin (PDF) tiliotteiden parsiminen JSON-muotoon
+Summary in Finnish: Osuuspankin (CSV, vain tilitapahtumat) ja S-Pankin (PDF) tiliotteiden parsiminen JSON-muotoon. Tämä toimii minulle eikä muita tavoitteita ole ollut.
 
 If you find this useful or have any thoughts, please contact me: http://iki.fi/mf
 
 Known issues
 ------------
-  * this is a tool that works for me, no much effort has been done beyond that goal
+  * 
   * in my test material, I don't have all possible transaction types. These need to be added manually. 
     * At least in S-Pankki it's possible to add custom types that replace actual transaction type. This makes it quite hard to detect the correct type.
   * originally developed in Ubuntu, later only in OSX
@@ -45,4 +45,4 @@ Todo
 ----
   * port to Javascript/Node
   * include pdf to text conversion as a library (pdf2json in npm?)
-  * make modular
+  * publish a tool to use the data
