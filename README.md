@@ -23,11 +23,11 @@ Prerequisites
     * Osuuspankki
       * statements in CSV format, transactions only (no headers or footers)
       * directory name = account IBAN (no account information available inside files)
-      * file name = tapahtumat<startdate>-<enddate>.csv  (default; example: tapahtumat20091201-20091231.csv)
+      * file name = tapahtumat{startdate}-{enddate}.csv  (default; example: tapahtumat20091201-20091231.csv)
     * S-Pankki
       * statements in text format as parsed by pdftotext tool (see below)
 
-<code>python statementparser.py 'source directory, will be handled recursively' 'output file in json'</code>
+<code>python statementparser.py '{source directory, will be handled recursively}' '{output file in json}'</code>
 
 Using pdftotext to convert S-Pankki PDF-files to text
 -----------------------------------------------------
