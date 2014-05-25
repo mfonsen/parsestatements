@@ -144,7 +144,7 @@ def mergeRawTransactions(transactions,metaData):
     return transactions       
 
 #Parse transactions
-def parseStatementTransactions2(transactions):
+def parseStatementTransactions(transactions):
     """
         #type specific elements
         #noteDescription

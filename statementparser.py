@@ -94,7 +94,7 @@ transactions.extend(transactionsTemp)
 
 #read and process s-pankki
 transactionsTemp = filereader(args.input,'txt',spankki.transactionslookup)
-transactionsTemp = spankki.parseStatementTransactions2(transactionsTemp)
+transactionsTemp = spankki.parseStatementTransactions(transactionsTemp)
 
 #merge handler module results
 transactions.extend(transactionsTemp)
