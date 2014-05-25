@@ -5,7 +5,7 @@ For parsing Finnish Osuuspankki (CSV, transactions only) and S-Pankki (PDF) stat
 
 Summary in Finnish: Osuuspankin (CSV, vain tilitapahtumat) ja S-Pankin (PDF) tiliotteiden parsiminen JSON-muotoon
 
-If you find this useful or have any thoughts, please contact me.
+If you find this useful or have any thoughts, please contact me: http://iki.fi/mf
 
 Known issues
 ------------
