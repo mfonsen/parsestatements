@@ -12,6 +12,7 @@ Known issues
   * in my test material, I don't have all possible transaction types. These need to be added manually. 
     * At least in S-Pankki it's possible to add custom types that replace actual transaction type. This makes it quite hard to detect the correct type.
   * originally tested in Ubuntu, later only in OSX
+  * pdftotext is not easy to install currect OSX, studying other libraries (in javascript)
 
 Usage
 -----
@@ -34,7 +35,7 @@ Using pdftotext to convert S-Pankki PDF-files to text
 Pdftotext is a tool for converting PDF files to text (http://en.wikipedia.org/wiki/Pdftotext)
 
 Installing pdftotext 
-  * Mac: available on homebrew: <code>brew install poppler</code>, 
+  * Mac (unfortunately this does not work in Maverick without a non-trivial dependency): available on homebrew: <code>brew install poppler</code>, 
   * Ubuntu: sudo apt-get install xpdf
 
 To execute pdftotext on all PDF files in a directory
