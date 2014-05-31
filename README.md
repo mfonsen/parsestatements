@@ -12,7 +12,6 @@ Known issues
   * in my test material, I don't have all possible transaction types. These need to be added manually. 
     * At least in S-Pankki it's possible to add custom types that replace actual transaction type. This makes it quite hard to detect the correct type.
   * originally tested in Ubuntu, later only in OSX
-  * pdftotext is not easy to install current OSX, studying other libraries (in javascript)
 
 Usage
 -----
@@ -35,15 +34,17 @@ Using pdftotext to convert S-Pankki PDF-files to text
 Pdftotext is a tool for converting PDF files to text (http://en.wikipedia.org/wiki/Pdftotext)
 
 Installing pdftotext 
-  * Mac (unfortunately this does not work in Maverick without a non-trivial dependency): available on homebrew: <code>brew install poppler</code>, 
+  * Mac: available as part of xpdf: http://www.foolabs.com/xpdf/download.html (in bin64 directory), 
   * Ubuntu: sudo apt-get install xpdf
+  * Windows: also available as part of xpdf, haven't tested though
 
-To execute pdftotext on all PDF files in a directory
-  * Run <code>find . -name '*.pdf' \( -exec pdftotext -raw "$PWD"/{} \;  \)</code>
+To execute pdftotext on all PDF files underneath a directory
+  * Run <code>find . -name '*.pdf' \\( -exec pdftotext -raw "$PWD"/{} \; \\)</code>
 
 Todo
 ----
   * port to Javascript/Node
-  * include pdf to text conversion as a library (pdf2json in npm?)
+  * debug mode to make it easier to spot unsupported input data
   * publish a tool to use the data
   * link to other tools for parsing Osuuspankki data, there seems to be at least a couple of those
+  * include pdf to text conversion as a library (pdf2json in npm?)
