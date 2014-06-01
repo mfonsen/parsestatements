@@ -1,9 +1,9 @@
 parsestatements
 ===============
 
-For parsing Finnish Osuuspankki (CSV, transactions only) and S-Pankki (PDF) statements to JSON. This is a tool that works for me, no much effort has been done beyond that goal.
+For parsing Finnish Osuuspankki (CSV, transactions only) and S-Pankki (PDF) statements to JSON and CSV. 
 
-Summary in Finnish: Osuuspankin (CSV, vain tilitapahtumat) ja S-Pankin (PDF) tiliotteiden parsiminen JSON-muotoon. Tämä toimii minulle eikä muita tavoitteita ole ollut.
+Summary in Finnish: Osuuspankin (CSV, vain tilitapahtumat) ja S-Pankin (PDF) tiliotteiden parsiminen JSON ja CSV-muotoon. 
 
 If you find this useful or have any thoughts, please contact me: http://iki.fi/mf
 
@@ -25,9 +25,10 @@ Prerequisites
       * directory name = account IBAN (no account information available inside files)
       * file name = tapahtumat{startdate}-{enddate}.csv  (default; example: tapahtumat20091201-20091231.csv)
     * S-Pankki
-      * statements in text format as parsed by pdftotext tool (see below)
+      * statements in PDF format
+      * pdftotext tool in path (see below)
 
-<code>python statementparser.py '{source directory, will be handled recursively}' '{output file in json}'</code>
+<code>python statementparser.py '{source directory, will be handled recursively}' '{output file in json}' '{output file in csv}'</code>
 
 Using pdftotext to convert S-Pankki PDF-files to text
 -----------------------------------------------------
@@ -38,13 +39,9 @@ Installing pdftotext
   * Ubuntu: sudo apt-get install xpdf
   * Windows: also available as part of xpdf, haven't tested though
 
-To execute pdftotext on all PDF files underneath a directory
-  * Run <code>find . -name '*.pdf' \\( -exec pdftotext -raw "$PWD"/{} \; \\)</code>
-
 Todo
 ----
   * port to Javascript/Node
   * debug mode to make it easier to spot unsupported input data
   * publish a tool to use the data
   * link to other tools for parsing Osuuspankki data, there seems to be at least a couple of those
-  * include pdf to text conversion as a library (pdf2json in npm?)
