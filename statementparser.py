@@ -62,9 +62,27 @@ def outputCsv(transactions, path):
 
 #write results as json
 def outputjson(transactions, path):
-    result = cleanForJson(transactions)
+    encodedTransactions = encodeOsuuspankkiTransactions(transactions)
+
     with open(path, 'wb') as fp:
-        json.dump(result, fp, indent=0)
+        json.dump(encodedTransactions, fp, indent=0)
+
+#convert encoding for Osuuspankki
+#work around to resolve encoding issues when saving to CSV
+def encodeOsuuspankkiTransactions(transactions):
+    encodedTransactions = []
+    for i, val in enumerate(transactions):
+        transaction = transactions[i]
+        encodedTransaction = {}
+
+        for key in transaction.keys():
+            if transaction["StAccountBic"]=="OKOYFIHH":
+                if isinstance(transaction[key],str):
+                    encodedTransaction[key] = transaction[key].decode("windows-1252")
+                else:
+                    encodedTransaction[key] = transaction[key]
+        encodedTransactions.append(encodedTransaction)
+    return encodedTransactions
 
 #iterates files in sourcepath that have sourceextension. 
 #In the end of each iteration calls handlermethod(f,path,transactions). 
@@ -89,6 +107,10 @@ def convertToIsoDate(dateString):
 
 def cleanData(transactionsToClean):
     transactions = transactionsToClean
+
+    #output currently does not support writing rawTransactions key
+    for i in transactions:
+        i.pop("rawTransaction", None)
 
     for i, val in enumerate(transactions):
         result = transactions[i]
@@ -126,27 +148,6 @@ def cleanData(transactionsToClean):
                     del result[key]
     return transactionsToClean
 
-
-#convert dates and curriences to a format usable in json
-def cleanForJson(transactionsToClean):
-    transactions = transactionsToClean
-
-    #reduce json size
-    for i in transactions:
-        i.pop("rawTransaction", None)
-
-    for i, val in enumerate(transactions):
-        result = transactions[i]
-
-        for key in result.keys():
-            #convert encoding for Osuuspankki
-            #work around to resolve encoding issues when saving to CSV
-            if result["StAccountBic"]=="OKOYFIHH":
-                if isinstance(result[key],str):
-                    result[key] = result[key].decode("windows-1252")
-    return transactions
-
-
 #main
 
 #@todo: put handler modules as a list, iterate through list
@@ -175,8 +176,8 @@ transactionsTemp = spankki.parseStatementTransactions(transactionsTemp)
 transactions.extend(transactionsTemp)
 
 #clean data
-transactions = cleanData(transactions)
+cleanData(transactions)
 
 #finally output all data
-outputCsv(transactions, args.outputcsv)
 outputjson(transactions, args.outputjson)
+outputCsv(transactions, args.outputcsv)
