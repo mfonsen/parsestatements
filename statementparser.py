@@ -5,6 +5,7 @@
 
 #built in
 import os.path, json, argparse, csv
+from datetime import datetime, date
 
 #custom
 import osuuspankki, spankki #bank specific handlers
@@ -101,9 +102,7 @@ def filereader(sourcepath, sourceextension,handlermethod):
 
 #24.12.2000 --> 2000-12-24
 def convertToIsoDate(dateString):
-    dateString = dateString[6:10] + "-" + dateString[3:5] + "-" + dateString[0:2]
-    #time.strptime(dateString, '%Y-%m-%d')
-    return dateString
+    return datetime.strptime(dateString[0:10], "%d.%m.%Y").date().isoformat()
 
 def cleanData(transactionsToClean):
     transactions = transactionsToClean
