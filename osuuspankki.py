@@ -20,9 +20,10 @@ def readStatement(f): #f: open file
     r.pop(0)
 
     #decode cell by cell
-    for row in r:
-        for i, val in enumerate(row):
-            row[i] = val.decode("windows-1252")
+    #commented out due to unresolved encoding issues when writing to CSV
+    #for row in r:
+        #for i, val in enumerate(row):
+            #row[i] = val.decode("windows-1252")
 
     #@todo:close file?
     return r
