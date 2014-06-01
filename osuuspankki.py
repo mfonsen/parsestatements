@@ -153,7 +153,8 @@ def parseStatementTransactions(transactions):
         result['noteKirjausPvm'] = transaction[0] #Kirjauspäivä
         result['noteArvoPvm'] = transaction[1] #Arvopäivä
         result['noteSum'] = transaction[2] #Määrä EUROA
-        result['noteTypeId'] = transaction[3] #Tapahtumalajikoodi
+        #for some reason notetypeid is in parenthesis
+        result['noteTypeId'] = transaction[3][1:-1] #Tapahtumalajikoodi
         result['noteType'] = transaction[4] #Selitys
         result['notePayerPayee'] = transaction[5] #Saaja/Maksaja
         transaction[6] = transaction[6].strip()
@@ -162,7 +163,8 @@ def parseStatementTransactions(transactions):
         elif transaction[6]!="":
             result['noteTargetIban'] = transaction[6][0:22]
             result['noteTargetBic'] = transaction[6][25:33]
-        result['noteReference'] = transaction[7] #Viite
+        #for some reason notetypeid is in parenthesis
+        result['noteReference'] = transaction[7][1:-1] #Viite
         if not result.has_key('noteDescription'):
             result['noteDescription'] = transaction[8] #Viesti
         result['noteArchiveId'] = transaction[9] #Arkistotunnus
