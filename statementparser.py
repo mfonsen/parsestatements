@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 # Statement Parser
 # example usage: python statementparser.py '<input path>' '<output path+filename>'
 
@@ -155,9 +153,8 @@ def cleanData(transactionsToClean):
 
 #@todo: put handler modules as a list, iterate through list
 transactions = []
-transactionsTemp = []
 
-#files to parse, output file
+#files to parse, output files
 parser = argparse.ArgumentParser()
 parser.add_argument("input")
 parser.add_argument("outputjson")
@@ -165,18 +162,14 @@ parser.add_argument("outputcsv")
 args = parser.parse_args()
 
 #read and process osuuspankki
-transactionsTemp = filereader(args.input,'csv',osuuspankki.transactionslookup)
-transactionsTemp = osuuspankki.parseStatementTransactions(transactionsTemp)
-
-#merge handler module results
-transactions.extend(transactionsTemp)
+transactionsOsuuspankki = filereader(args.input,'csv',osuuspankki.transactionslookup)
+transactionsOsuuspankki = osuuspankki.parseStatementTransactions(transactionsOsuuspankki)
+transactions.extend(transactionsOsuuspankki)
 
 #read and process s-pankki
-transactionsTemp = filereader(args.input,'txt',spankki.transactionslookup)
-transactionsTemp = spankki.parseStatementTransactions(transactionsTemp)
-
-#merge handler module results
-transactions.extend(transactionsTemp)
+transactionsSpankki = filereader(args.input,'txt',spankki.transactionslookup)
+transactionsSpankki = spankki.parseStatementTransactions(transactionsSpankki)
+transactions.extend(transactionsSpankki)
 
 #clean data
 cleanData(transactions)
