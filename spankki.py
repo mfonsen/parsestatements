@@ -1,5 +1,5 @@
 # coding=UTF-8
-import re
+import re, subprocess, os
 
 #parse s-pankki pdf statements in txt format
 #examples in multiline strings
@@ -528,6 +528,7 @@ def parseStatementTransactions(transactions):
     return transactions
 
 def transactionslookup(openfile, path,transactions):
-    statement = readStatement(openfile)
+    print "Executing pdftotext for: " + path
+    statement = subprocess.Popen(["pdftotext", "-raw",path,"-enc", "UTF-8","-"],  stdout=subprocess.PIPE).communicate()[0]
     transactions.extend(mergeRawTransactions(splitStatement(statement),parseStatementMetadata(statement,path)))
     return transactions

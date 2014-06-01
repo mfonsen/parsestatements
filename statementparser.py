@@ -117,6 +117,7 @@ def cleanData(transactionsToClean):
 
         #convert noteSum to cents
         #@todo: take maketrans into use
+        print transactions[i]
         result['noteSum'] = result['noteSum'].replace("+","")
         result['noteSum'] = (result['noteSum'].replace(".",""))
         result['noteSum'] = (result['noteSum'].replace(",",""))
@@ -169,7 +170,7 @@ transactionsOsuuspankki = osuuspankki.parseStatementTransactions(transactionsOsu
 transactions.extend(transactionsOsuuspankki)
 
 #read and process s-pankki
-transactionsSpankki = filereader(args.input,'txt',spankki.transactionslookup)
+transactionsSpankki = filereader(args.input,'pdf',spankki.transactionslookup)
 transactionsSpankki = spankki.parseStatementTransactions(transactionsSpankki)
 transactions.extend(transactionsSpankki)
 
