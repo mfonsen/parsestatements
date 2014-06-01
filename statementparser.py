@@ -80,6 +80,8 @@ def encodeOsuuspankkiTransactions(transactions):
                     encodedTransaction[key] = transaction[key].decode("windows-1252")
                 else:
                     encodedTransaction[key] = transaction[key]
+            else:
+                encodedTransaction[key] = transaction[key]
         encodedTransactions.append(encodedTransaction)
     return encodedTransactions
 

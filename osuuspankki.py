@@ -156,7 +156,8 @@ def parseStatementTransactions(transactions):
         #for some reason notetypeid is in parenthesis
         result['noteTypeId'] = transaction[3][1:-1] #Tapahtumalajikoodi
         result['noteType'] = transaction[4] #Selitys
-        result['notePayerPayee'] = transaction[5] #Saaja/Maksaja
+        #for some reason notetypeid is in parenthesis
+        result['notePayerPayee'] = transaction[5][1:-1] #Saaja/Maksaja
         transaction[6] = transaction[6].strip()
         if converter.validate_old(transaction[6]):
             result['noteTargetClassic'] = transaction[6]
