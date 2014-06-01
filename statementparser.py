@@ -111,9 +111,8 @@ parser.add_argument("outputcsv")
 args = parser.parse_args()
 
 #read and process osuuspankki
-#transactionsOsuuspankki = filereader(args.input,'csv',osuuspankki.transactionslookup)
-#transactionsOsuuspankki = osuuspankki.parseStatementTransactions(transactionsOsuuspankki)
-#transactions.extend(transactionsOsuuspankki)
+transactionsOsuuspankki = filereader(args.input,'csv',osuuspankki.transactionslookup)
+transactions.extend(transactionsOsuuspankki)
 
 #read and process s-pankki
 transactionsSpankki = filereader(args.input,'pdf',spankki.transactionslookup)

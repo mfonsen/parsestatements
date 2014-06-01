@@ -4,6 +4,9 @@ import time
 import converter
 import csv
 
+import cleantransactions
+
+
 #Reads Osuuspankki CSV-files without header, footer
 
 #read file to a list
@@ -111,6 +114,7 @@ def parseStatementTransactions(transactions):
     for i, val in enumerate(transactions):
 
         matched = False
+        print transactions[i]
         transaction = transactions[i]['rawTransaction']
         #print "Transaction: " + str(transaction)
 
@@ -195,8 +199,15 @@ def parseStatementTransactions(transactions):
     return transactions
 
 #parses openfile in path, extends transcations list with found transaction 
-def transactionslookup(openfile, path,transactions):
-    statement = readStatement(openfile)
-    transactions.extend(mergeRawTransactions(statement, parseStatementMetadata(statement, path)))
+def transactionslookup(openfile, path):
+    print "*** Reading file: " + path
+    transactions = readStatement(openfile)
+    print "Gather statement meta data"
+    metadata = parseStatementMetadata(transactions, path)
+    print "*** Merge metadata and transactions"
+    mergeRawTransactions(transactions,metadata)
+    print "*** Parsing transactions: " + path
+    parseStatementTransactions(transactions)
+    print "*** Cleaning: " + path
+    cleantransactions.cleanData(transactions)
     return transactions
-
