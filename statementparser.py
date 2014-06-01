@@ -31,7 +31,7 @@ def outputCsv(transactions, path):
         "noteTypeId",
         "noteType",
         "notePayerPayee",
-        "noteTargetClassic",
+        #converted to iban, always empty: "noteTargetClassic",
         "noteTargetIban",
         "noteTargetBic",
         "noteReference",
