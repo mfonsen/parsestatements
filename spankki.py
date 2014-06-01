@@ -1,22 +1,15 @@
 # coding=UTF-8
 import re, subprocess, os
 
+import cleantransactions
+
 #parse s-pankki pdf statements in txt format
 #examples in multiline strings
 
-#read file to a list
-def readStatement(f): #f: open file
-    data =[]
-    s = ""
+#regular expressions can be tested easily in http://regex101.com/#python by using following flags: ms
 
-    counter = 0
-    for line in f:
-        data.append(line.rstrip())
-        counter=counter+1
-    
-    #join the list to a string
-    s = '\n'.join(data)
-    
+#remove page breaks and other meta data
+def removeMetaData(s):
     """
     21.01.2008 21.01.2008 SELLER 3,20-
     21.01.2008 KORTTIOSTO
@@ -71,12 +64,7 @@ def readStatement(f): #f: open file
     * JATKUU *\n\n1 (4)\n\n120,50-\n\n2,60-\n\n\x0cSIVU\n\nTILIOTE\nP\xc3\x84IV\xc3\x84M\xc3\x84\xc3\x84R\xc3\x84\nKAUSI\nS-TILI\n\nKIRJAUSP\xc3\x84IV\xc3\x84\n\nMAKSUP\xc3\x84IV\xc3\x84\nARVOP\xc3\x84IV\xc3\x84\n\nSAAJA/MAKSAJA\nSAAJAN TILINUMERO\nVIESTI\n\n2\n
     """
     s = re.sub("(?:PANOT KIRJAUSPÄIVÄN ALUSTA [\d\.,]*\+\nOTOT KIRJAUSPÄIVÄN ALUSTA [\d\.,]*-\n)?\* JATKUU \*.*?KIRJAUSPÄIVÄ\n","",s,flags=re.DOTALL) #|re.DEBUG    
-    y = []
-    y.append(s)
 
-    #@todo: Is this really needed?
-    f.close()
-    
     return s
 
 
@@ -141,7 +129,6 @@ def mergeRawTransactions(transactions,metaData):
         result['StRow'] = row
         result = dict(result.items() + metaData.items())
         transactions[i] = result
-    return transactions       
 
 #Parse transactions
 def parseStatementTransactions(transactions):
@@ -466,16 +453,13 @@ def parseStatementTransactions(transactions):
         +reNoteKirjausPvm + "$"
         ,re.MULTILINE) 
 
-    print "*** Before Parsing ***"
-    
-    
     matches = 0
     
     for i, val in enumerate(transactions):
         
         matched = False
+        #print "Transaction: " + str(transactions[i])
         transaction = transactions[i]['rawTransaction']
-        #print "Transaction: " + str(transaction)
         
         result = {}
         for matcher in iter(matchers):
@@ -508,7 +492,7 @@ def parseStatementTransactions(transactions):
         if not matched: 
             print "No match!: \n"  + '\n'.join(transaction)
         
-    print "*** Parsed " + str(matches) + "/" + str(len(transactions)) +  "***"
+    print "*** parsed " + str(matches) + "/" + str(len(transactions)) +  "***"
     
 
     #source: http://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
@@ -525,10 +509,19 @@ def parseStatementTransactions(transactions):
     
     print "Not identified: " + str(len(searchEmpty(transactions)))
    
-    return transactions
-
-def transactionslookup(openfile, path,transactions):
-    print "Executing pdftotext for: " + path
+def transactionslookup(openfile, path):
+    print "*** Executing pdftotext for: " + path
     statement = subprocess.Popen(["pdftotext", "-raw",path,"-enc", "UTF-8","-"],  stdout=subprocess.PIPE).communicate()[0]
-    transactions.extend(mergeRawTransactions(splitStatement(statement),parseStatementMetadata(statement,path)))
+    print "Parse statement meta data"
+    metadata = parseStatementMetadata(statement,path)
+    print "*** Removing meta data from statement"
+    statement = removeMetaData(statement)
+    print "*** Split to transactions"
+    transactions = splitStatement(statement)
+    print "*** Merge "
+    mergeRawTransactions(transactions,metadata)
+    print "*** Parsing: " + path
+    parseStatementTransactions(transactions)
+    print "*** Cleaning: " + path
+    cleantransactions.cleanData(transactions)
     return transactions
