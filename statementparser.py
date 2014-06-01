@@ -4,7 +4,7 @@
 # example usage: python statementparser.py '<input path>' '<output path+filename>'
 
 #built in
-import os.path, json, argparse, csv, codecs
+import os.path, json, argparse, csv
 
 #custom
 import osuuspankki, spankki #bank specific handlers
@@ -13,38 +13,35 @@ import converter #iban conversion
 #write results as csv
 def outputCsv(transactions, path):
     keys = [
-            'StAccountIban', 
-            'StAccountBic',
-            'StDateStart', 
-            'StDateEnd', 
-            #'StRow',
-            
-            'noteKirjausPvm',
-            'noteMaksuPvm',
-            'noteArvoPvm',
-             
-            #'noteSum',
-            'notePayer',
-            'notePayee', 
-            'noteType',
-            
-            'noteDescription', 
-            'noteReference', 
-            'noteCard', 
-            
-            'noteTargetClassic',
-            'noteTargetIban', 
-            'noteTargetBic',
-            
-            'matcher',
-            #'rawTransaction', 
-            
-            #osuuspankki
-            'StDirectory',
-            'StFileName',
-            'noteArchiveId', 
-            'noteTypeId'
-    
+        #statement metadata
+        "StAccountBic",
+        "StAccountIban",
+        "StDateStart",
+        "StDateEnd",
+        "path",
+
+        #transaction metadata
+        #"rawTransaction",
+        "StRow",
+        "matcher",
+
+        #transaction 
+        "noteKirjausPvm",
+        "noteArvoPvm",
+        "noteSum",
+        "noteTypeId",
+        "noteType",
+        "notePayerPayee",
+        "noteTargetClassic",
+        "noteTargetIban",
+        "noteTargetBic",
+        "noteReference",
+        "noteDescription",
+        "noteArchiveId",
+
+        #transaction, not in osuuspankki
+        "noteMaksuPvm",
+        "noteCard"
             ]
 
     with open(path, 'wb') as f:
