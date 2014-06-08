@@ -225,6 +225,10 @@ def parseStatementTransactions(transactions):
     24.08.2011 TILINYLITYSMAKSU
     """
     """
+    23.05.2008 25.05.2008 OSUUSKAUPPA 9,99+
+    23.05.2008 OSUUSMAKSUN KORKO
+    """
+    """
     28.06.2013 28.06.2013 SELLER 9.999,99-
     01.07.2013 TILINYLITYSKORKO
     KAUSI 01.06.2013 - 30.06.2013
@@ -279,9 +283,15 @@ def parseStatementTransactions(transactions):
     05.12.2007 TILISIIRTO
     message message
     """    
+    """
+    05.07.2010 05.07.2010 S-PANKKI OY 9,99-
+    05.07.2010 OTTOPISTE TAP.KYSELY
+    9999999999999999 5 kuukausi 06
+    Saldokysely 1 kpl
+    """
     matchers['KORTTIOSTO SHORT'] = re.compile(
          reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+"+reNotePayerPayee+"\s"+reNoteSum+"$\s*"
-         +reNoteKirjausPvm+" (?P<noteTypeId>TILISIIRTO|KORTTIOSTO|KORJAUS|PALKKA|TALLETUS|MAKSUTAPAETU|BONUS|TALLETUSKORKO|LÄHDEVERO|TILINYLITYSMAKSU|TILINYLITYSKORKO|TILINYLITYSILMOITUS|OMA TILISIIRTO|HYVITYSKORKO|PALVELUMAKSU|LAPSILISÄ|TUKI\/ETUUS)$\s*"
+         +reNoteKirjausPvm+" (?P<noteTypeId>TILISIIRTO|KORTTIOSTO|KORJAUS|PALKKA|TALLETUS|MAKSUTAPAETU|BONUS|TALLETUSKORKO|LÄHDEVERO|TILINYLITYSMAKSU|TILINYLITYSKORKO|TILINYLITYSILMOITUS|OMA TILISIIRTO|HYVITYSKORKO|PALVELUMAKSU|LAPSILISÄ|TUKI\/ETUUS|OSUUSMAKSUN KORKO|OTTOPISTE TAP.KYSELY)$\s*"
          "(?P<noteDescription>.*\s*)?$\s*"
          "(ARKISTOINTITUNNUS\s*$\s*)?"+reNoteArchiveId+"?"
          ,re.MULTILINE) 
@@ -447,10 +457,14 @@ def parseStatementTransactions(transactions):
     16.06.2008 16.06.2008 PANO/OTTO 99,99+
     16.06.2008
     """    
+    """
+    12.10.2007 12.10.2007 SIIRTO SÄÄSTÖKASSASTA 9,99+
+    12.10.2007 99999999999999
+    """
     #type is incorrectly saved into payerpayee field
     matchers['LÄHDEVERO'] = re.compile(
-        reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?P<noteTypeId>LÄHDEVERO|AUTOMAATTINOSTO|PANO/OTTO)\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + "$"
+        reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?P<noteTypeId>LÄHDEVERO|AUTOMAATTINOSTO|PANO/OTTO|SIIRTO SÄÄSTÖKASSASTA)\s"+reNoteSum+"$\s*"
+        +reNoteKirjausPvm + "\s*(?P<noteReference>.+)?$"
         ,re.MULTILINE) 
 
     matches = 0
