@@ -87,7 +87,7 @@ def parseStatementTransactions(transactions):
                  9 999,99 EUROA
     KORKO                  999,99 EUROA
     """
-    matchers['MESSAGE ONLY'] = re.compile(
+    matchers['OP MESSAGE ONLY'] = re.compile(
                                                 "Viesti:\s*(?P<noteDescription>.*)$"
                                                 )
     #unsupported types, store as is
@@ -95,13 +95,13 @@ def parseStatementTransactions(transactions):
     """
     SEPA-MAKSU                         Viesti:                            SAAJA/MOTTAG./BEN: ZZZ ZZZ
     """
-    matchers['TYPE-TYPE2/COUNTERPART-MESSAGE'] = re.compile(
+    matchers['OP TYPE-TYPE2/COUNTERPART-MESSAGE'] = re.compile(
             "(?:.*)\s+Viesti:\s+(?P<noteDescription>.*)$"
            )
     """
     SEPA-MAKSU Maksajan viite: /OP99/ZZZ 999ZZZ999 Viesti:
     """
-    matchers['TYPE-COUNTERPART REFERENCE-EMPTY MESSAGE'] = re.compile(
+    matchers['OP TYPE-COUNTERPART REFERENCE-EMPTY MESSAGE'] = re.compile(
             "(?:.*)\s+Maksajan viite:\s+(?P<noteDescription>.*)Viesti:$"
         )
 
@@ -143,10 +143,10 @@ def parseStatementTransactions(transactions):
             #no matcher returned results, save as is
             if not matched:
                 #save matcher for debugging
-                result['matcher'] = "NO MATCH"
+                result['matcher'] = "OP NO MATCH"
                 print "Cannot parse description, saved anyway: \"" + transaction[8] + "\""#+";" + transaction[3] + ";" + transaction[4]#\n"  + '\n'.join(transaction)
         else:
-                result['matcher'] = "EMPTY DESCRIPTION"
+                result['matcher'] = "OP EMPTY DESCRIPTION"
 
                 matches = matches+1
                 matched = True

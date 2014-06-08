@@ -145,6 +145,22 @@ def parseStatementTransactions(transactions):
     
     #precompiled matchers
 
+    reNoteTypeId = ("(?P<noteTypeId>"
+    #type ids visible on S-Pankki web site (custom types user can select)
+    "ASUMISKULUT|AUTOKULUT|E-LASKU|ELATUSMAKSU|ELÄKEVAKUUTUSMAKSU"
+    "|FYSIOTERAPIAMAKSU|HAMMASHOITOMAKSU|HOITOMAKSU|JÄSENMAKSU|KAASUMAKSU|KODINHOITOMAKSU"
+    "|KOULUMAKSU|LASKUNMAKSU|LEHTITILAUS|LUOTTOKORTTIMAKSU|LUPAMAKSU|LÄMPÖLASKU/ÖLJY|LÄÄKÄRINPALKKIO"
+    "|MÖKKIKULUT|NUOHOUSMAKSU|OMA TILISIIRTO|OSAMAKSULAINA|PALKKA|POLTTOAINELASKU|PUHELINLASKU|PUHTAANAPITO"
+    "|PÄIVÄHOITOMAKSU|RUOKALASKU|SAIRAANHOITOMAKSU|SÄHKÖMAKSU|TALOKULUT|TERVEYDENHOITOMAKSU|TILISIIRTO|VAKUUTUS"
+    "|VAPAA-AJAN MAKSUT|VENEMAKSUT|VERKKOMAKSU|VERO|VESIMAKSU|VISAMAKSU|VUOKRANMAKSU|YHTIÖVASTIKE"
+    #other type ids found on personal statements, more probably need to be added here
+    "|KORTTIOSTO|KORTTIOSTON KORJAUS|KORJAUS"
+    "|TALLETUS|MAKSUTAPAETU|BONUS|TALLETUSKORKO|LÄHDEVERO|TILINYLITYSMAKSU|TILINYLITYSKORKO|TILINYLITYSILMOITUS"
+    "|HYVITYSKORKO|PALVELUMAKSU|LAPSILISÄ|TUKI\/ETUUS|OSUUSMAKSUN KORKO|OTTOPISTE TAP.KYSELY"
+    "|KORTTITAP. KORJAUS|AUTOMAATTINOSTO|KORTIN UUSINTA|NOSTOPALKKIO"
+    "|KÄTEISNOSTO KORTILLA|AUTOMAATTINOSTO|PANO/OTTO|SIIRTO SÄÄSTÖKASSASTA|VAPAA-AJANKULUT"
+    #end string
+    ")")
     reNoteMaksuPvm = "(?P<noteMaksuPvm>\d+\.\d+\.\d+)"
     reNoteArvoPvm = "(?P<noteArvoPvm>\d+\.\d+\.\d+)"
     reNotePayerPayee = "(?P<notePayerPayee>.*)" 
@@ -162,253 +178,43 @@ def parseStatementTransactions(transactions):
     reNoteTargetBic = "(?P<noteTargetBic>[a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)"
 
     matchers = {}
-    '''
-    04.03.2008 04.03.2008 SELLER 9,99-
-    04.03.2008 KORTTIOSTO
-    99999999999999
-    SELLER
-    SELLER HELSINKI
-    9999 9999 9999 9999
-    99999999999999
-    '''
-    '''    
-    26.11.2007 26.11.2007 SELLER 999,99+
-    26.11.2007 KORTTIOSTON KORJAUS
-    99999999999999
-    SELLER
-    SELLER HELSINKI
-    9999 9999 9999 9999
-    99999999999999
-    '''    
-    matchers['KORTTIOSTO CLASSIC'] = re.compile(
+
+    #for example please see README.md
+   
+    matchers['SPANKKI CARD CLASSIC'] = re.compile(
         reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?:.*)\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + " (?P<noteTypeId>KORTTIOSTO|KORTTIOSTON KORJAUS)$\s"
+        +reNoteKirjausPvm+"\s+"+reNoteTypeId + "$\s"
         +reNoteReference+"$\s*"
         "(?:.*)$\s*"
         +reNotePayerPayee+"$\s*"
         +reNoteCardClassic
         ,re.MULTILINE)
-    """
-    12.11.2008 11.11.2008 SELLER 999,99+
-    11.11.2008 KORJAUS
-    """
-    """
-    19.08.2008 19.08.2008 SELLER 999,99-
-    19.08.2008 KORTTIOSTO
-    """    
-    """
-    20.02.2008 20.02.2008 SELLER 9.999,99+
-    20.02.2008 PALKKA
-    """
-    """
-    08.02.2008 08.02.2008 SELLER 9.999,99-
-    08.02.2008 TALLETUS
-    """ 
-    """
-    10.05.2010 10.05.2010 SELLER 9.999,99+
-    10.05.2010 MAKSUTAPAETU
-    """
-    """
-    09.04.2010 10.04.2010 SELLER 9.999,99+
-    09.04.2010 BONUS
-    """
-    """
-    23.02.2009 23.02.2009 SELLER 9.999,99+
-    23.02.2009 TALLETUSKORKO
-    """
-    """
-    31.12.2012 31.12.2012 SELLER 9.999,99-
-    01.01.2013 LÄHDEVERO
-    """
-    """
-    24.08.2011 24.08.2011 SELLER 9.999,99-
-    24.08.2011 TILINYLITYSMAKSU
-    """
-    """
-    23.05.2008 25.05.2008 OSUUSKAUPPA 9,99+
-    23.05.2008 OSUUSMAKSUN KORKO
-    """
-    """
-    28.06.2013 28.06.2013 SELLER 9.999,99-
-    01.07.2013 TILINYLITYSKORKO
-    KAUSI 01.06.2013 - 30.06.2013
-    """
-    """
-    02.07.2013 02.07.2013 SELLER 9.999,99-
-    02.07.2013 TILINYLITYSILMOITUS
-    """
-    """
-    15.02.2011 15.02.2011 SELLER 9.999,99-
-    15.02.2011 PALVELUMAKSU
-    TAMMIKUU 2011
-    Hylätyt maksut 1 kpl 9,99
-    """
-    """
-    31.12.2007 31.12.2007 SELLER 9.999,99+
-    01.01.2008 HYVITYSKORKO
-    KAUSI 01.01.2007 - 31.12.2007
-    """
-    """
-    31.08.2011 30.08.2011 SELLER 9.999,99-
-    31.08.2011 OMA TILISIIRTO
-    message message
-    """
-    '''
-    23.09.2011 23.09.2011 SELLER 9.999,99+
-    23.09.2011 LAPSILISÄ
-    LAPSILISÄ
-    MAKSAJAN VIITE
-    LL39 345985439757394895783
-    ARKISTOINTITUNNUS
-    53499539534953459344
-    '''
-    """
-    09.11.2011 09.11.2011 SELLER 9.999,99+
-    09.11.2011 TUKI/ETUUS
-    VANHEMPAINPÄIVÄRAHA
-    MAKSAJAN VIITE
-    VR39 345985439757394895783
-    ARKISTOINTITUNNUS
-    53499539534953459344
-    """
-    """
-    28.09.2011 27.09.2011 SELLER 9.999,99+
-    28.09.2011 TILISIIRTO
-    message message
-    ARKISTOINTITUNNUS
-    53499539534953459344
-    """
-    """
-    05.12.2007 03.12.2007 SELLER 9.999,99+
-    05.12.2007 TILISIIRTO
-    message message
-    """    
-    """
-    05.07.2010 05.07.2010 S-PANKKI OY 9,99-
-    05.07.2010 OTTOPISTE TAP.KYSELY
-    9999999999999999 5 kuukausi 06
-    Saldokysely 1 kpl
-    """
-    matchers['KORTTIOSTO SHORT'] = re.compile(
+
+    matchers['SPANKKI BASIC'] = re.compile(
          reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+"+reNotePayerPayee+"\s"+reNoteSum+"$\s*"
-         +reNoteKirjausPvm+" (?P<noteTypeId>TILISIIRTO|KORTTIOSTO|KORJAUS|PALKKA|TALLETUS|MAKSUTAPAETU|BONUS|TALLETUSKORKO|LÄHDEVERO|TILINYLITYSMAKSU|TILINYLITYSKORKO|TILINYLITYSILMOITUS|OMA TILISIIRTO|HYVITYSKORKO|PALVELUMAKSU|LAPSILISÄ|TUKI\/ETUUS|OSUUSMAKSUN KORKO|OTTOPISTE TAP.KYSELY)$\s*"
+         +reNoteKirjausPvm+"\s+"+ reNoteTypeId + "$\s*"
          "(?P<noteDescription>.*\s*)?$\s*"
          "(ARKISTOINTITUNNUS\s*$\s*)?"+reNoteArchiveId+"?"
          ,re.MULTILINE) 
-    """
-    02.05.2011 02.05.2011 SELLER 9.999,99-
-    02.05.2011 KORTTIOSTO
-    9999999999999999 99999999999999
-    SELLER VANTAA
-    """
-    """
-    19.09.2011 19.09.2011 SELLER 9.999,99+
-    19.09.2011 KORTTIOSTON KORJAUS
-    9999999999999999 99999999999999
-    SELLER VANTAA
-    """
-    """
-    08.12.2010 08.12.2010 SELLER 9.999,99+
-    08.12.2010 KORTTITAP. KORJAUS
-    9999999999999999 99999999999999
-    SELLER VANTAA
-    """    
-    """
-    11.06.2013 11.06.2013 SELLER 9.999,99-
-    11.06.2013 AUTOMAATTINOSTO
-    999999******9999 99999999999999
-    SELLER VANTAA
-    """
-    """ 
-    01.02.2012 01.02.2012 KORTIN UUSINTA/NYTT KORT 10,00-
-    01.02.2012 KORTIN UUSINTA
-    999999******9999 99999999999999
-    KORTIN UUSINTA/NYTT KORT
-    """
-    """
-    07.06.2013 07.06.2013 NOSTOPALKKIO/UTTAGSAVG. 5,00-
-    07.06.2013 NOSTOPALKKIO
-    999999******9999 99999999999999
-    NOSTOPALKKIO/UTTAGSAVG. SELLER
-    """
-    """
-    23.12.2009 23.12.2009 SELLER 9.999,99-
-    23.12.2009 KÄTEISNOSTO KORTILLA
-    9999999999999999 99999999999999
-    SELLER VANTAA
-    """
-    matchers['KORTTIOSTO IBAN'] = re.compile(
+
+    matchers['SPANKKI CARD IBAN'] = re.compile(
         reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?:.*)\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + " (?P<noteTypeId>KORTTIOSTO|KORTTIOSTON KORJAUS|KORJAUS|KORTTITAP. KORJAUS|AUTOMAATTINOSTO|KORTIN UUSINTA|NOSTOPALKKIO|KÄTEISNOSTO KORTILLA)\s*$\s*"
+        +reNoteKirjausPvm+"\s+"+reNoteTypeId + "$\s*"
         +reNoteCardIban+" "+reNoteReference+"$\s*"
         +reNotePayerPayee+"$\s*"
         ,re.MULTILINE)
-    '''
-    24.07.2009 24.07.2009 SELLER 9.999,99-
-    24.07.2009 999999-99999999
-    TILISIIRTO
-    '''
-    '''
-    08.01.2009 08.01.2009 SELLER 9.999,99-
-    08.01.2009 999999-99999999
-    TILISIIRTO
-    99999999999999999999
-    '''
-    '''
-    07.06.2010 06.06.2010 SELLER 9.999,99-
-    07.06.2010 999999-999999
-    VERKKOMAKSU
-    99999999999999999999
-    Viesti
-    '''
-    '''
-    29.09.2008 27.09.2008 SELLER 9.999,99-
-    29.09.2008 999999-999999
-    TERVEYDENHOITOMAKSU
-    99999999999999999999
-    '''
-    '''
-    23.02.2011 23.02.2011 SELLER 9.999,99-
-    23.02.2011 999999-999999
-    TILISIIRTO
-    message message
-    '''
 
-    """
-    14.12.2007 14.12.2007 SELLER 9.999,99-
-    14.12.2007 999999-999999
-    TALLETUS
-    """    
-    matchers['TILISIIRTO CLASSIC'] = re.compile(
+    matchers['SPANKKI ACCOUNT CLASSIC'] = re.compile(
          reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?:.*)\s"+reNoteSum+"$\s*"
          +reNoteKirjausPvm + " "+reNoteTargetClassic+"\s*$\s*"
-         "(?P<noteTypeId>TALLETUS|TILISIIRTO|VERKKOMAKSU|TERVEYDENHOITOMAKSU|AUTOKULUT|VAPAA-AJANKULUT|ASUMISKULUT|SÄHKÖMAKSU)$\s*"
+         + reNoteTypeId + "$\s*"
          +reNoteReference+"?\s*"
          "(?P<noteDescription>.+)?"
          ,re.MULTILINE)
  
-    '''
-    03.08.2011 03.08.2011 SELLER 9.999,99-
-    03.08.2011 TILISIIRTO
-    99999999999999999999
-    IBAN
-    FI9999999999999999
-    BIC
-    OKOYFIHH
-    '''
-    '''
-    25.07.2011 24.07.2011 SELLER 9.999,99-
-    25.07.2011 VERKKOMAKSU
-    99999999999999999999
-    IBAN
-    FI9999999999999999
-    BIC
-    NDEAFIHH
-    message message
-    '''
-    matchers['TILISIIRTO VIITENUMEROLLA IBAN'] = re.compile(
+    matchers['SPANKKI ACCOUNT IBAN REFERENCE'] = re.compile(
         reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+"+reNotePayerPayee+"\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + " (?P<noteTypeId>TILISIIRTO|VERKKOMAKSU)$\s*"
+        +reNoteKirjausPvm+"\s+"+reNoteTypeId +  "$\s*"
         +reNoteReference+"$\s*"
         "IBAN$\s*"
         +reNoteTargetIban+"$\s*"
@@ -416,54 +222,26 @@ def parseStatementTransactions(transactions):
         +reNoteTargetBic+"$\s*"
         "(?P<noteDescription>.*)$\s*"
         ,re.MULTILINE)    
-    """
-    28.10.2013 27.10.2013 SELLER 9.999,99-
-    28.10.2013 LASKUNMAKSU
-    message message
-    IBAN
-    FI9999999999999999
-    BIC
-    HANDFIHH
-    """
-    matchers['TILISIIRTO VIESTI IBAN'] = re.compile(
+
+    matchers['SPANKKI ACCOUNT IBAN MESSAGE'] = re.compile(
         reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+"+reNotePayerPayee+"\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + " (?P<noteTypeId>LASKUNMAKSU)$\s*"
+        +reNoteKirjausPvm+"\s+"+reNoteTypeId + "$\s*"
         "(?P<noteDescription>.*)$\s*"
         "IBAN$\s*"
         +reNoteTargetIban+"$\s*"
         "BIC$\s*"
         +reNoteTargetBic+"$\s*"
-                                             ,re.MULTILINE)
-    '''
-    20.01.2010 19.01.2010 SELLER 9.999,99+
-    20.01.2010 TILISIIRTO 387220
-    message message
-    '''
-    matchers['TILISIIRTO YKSINKERTAISELLA ARKISTOINTITUNNUKSELLA'] = re.compile(
+        ,re.MULTILINE)
+
+    matchers['SPANKKI REFERENCE 2ND ROW'] = re.compile(
         reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+"+reNotePayerPayee+"\s"+reNoteSum+"$\s*"
-        +reNoteKirjausPvm + " (?P<noteTypeId>TILISIIRTO) "+reNoteReference+"$\s*"
+        +reNoteKirjausPvm+"\s+"+reNoteTypeId+" "+reNoteReference+"$\s*"
         "(?P<noteDescription>.+)"
         ,re.MULTILINE)    
 
-    """
-    31.12.2007 31.12.2007 LÄHDEVERO 9,99-
-    01.01.2008
-    """    
-    """
-    21.07.2008 19.07.2008 AUTOMAATTINOSTO 99,99-
-    21.07.2008
-    """    
-    """
-    16.06.2008 16.06.2008 PANO/OTTO 99,99+
-    16.06.2008
-    """    
-    """
-    12.10.2007 12.10.2007 SIIRTO SÄÄSTÖKASSASTA 9,99+
-    12.10.2007 99999999999999
-    """
-    #type is incorrectly saved into payerpayee field
-    matchers['LÄHDEVERO'] = re.compile(
-        reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+(?P<noteTypeId>LÄHDEVERO|AUTOMAATTINOSTO|PANO/OTTO|SIIRTO SÄÄSTÖKASSASTA)\s"+reNoteSum+"$\s*"
+    #@todo: type is incorrectly saved into payerpayee field
+    matchers['SPANKKI TYPE 1ST ROW'] = re.compile(
+        reNoteMaksuPvm+"\s+"+reNoteArvoPvm+"\s+" + reNoteTypeId + "\s+"+reNoteSum+"$\s*"
         +reNoteKirjausPvm + "\s*(?P<noteReference>.+)?$"
         ,re.MULTILINE) 
 

@@ -3,6 +3,7 @@
 
 #built in
 import os.path, json, argparse, csv
+from collections import defaultdict
 
 #custom
 import osuuspankki, spankki #bank specific handlers
@@ -98,6 +99,48 @@ def filereader(sourcepath, sourceextension,handlermethod):
                 transactions.extend(handlermethod(f,path))
     return transactions
 
+#http://stackoverflow.com/questions/1479649/readably-print-out-a-python-dict-sorted-by-key
+def printplus(obj):
+    """
+    Pretty-prints the object passed in.
+
+    """
+    # Dict
+    if isinstance(obj, dict):
+        for k, v in sorted(obj.items()):
+            print u'{0}: {1}'.format(k, v)
+
+    # List or tuple            
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        for x in obj:
+            print x
+
+    # Other
+    else:
+        print obj
+
+def report(transactions):
+    def search(name, list):
+        return [element for element in list if element.has_key('noteType') and element['noteType'] == name ]
+
+    matchers = defaultdict(int)
+    banks = defaultdict(int)
+    statements = defaultdict(int)
+    total = 0
+
+    for transaction in transactions:
+        total+=1
+        banks[transaction["StAccountBic"]]+=1
+        matchers[transaction["matcher"]]+=1
+        statements[transaction["path"]]+=1
+
+    print "=== Transactions per matcher:"
+    printplus(matchers)
+    print "=== Transactions per bank:"
+    printplus(banks)
+    print "=== Total transactions: "+str(total)
+    print "=== Total statements: " + str(len(statements))
+
 #main
 
 #@todo: put handler modules as a list, iterate through list
@@ -117,6 +160,8 @@ transactions.extend(transactionsOsuuspankki)
 #read and process s-pankki
 transactionsSpankki = filereader(args.input,'pdf',spankki.transactionslookup)
 transactions.extend(transactionsSpankki)
+
+report(transactions)
 
 #finally output all data
 outputjson(transactions, args.outputjson)
