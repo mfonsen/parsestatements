@@ -1,5 +1,4 @@
 # Statement Parser
-# example usage: python statementparser.py '<input path>' '<output path+filename>'
 
 #built in
 import os.path, json, argparse, csv
