@@ -158,8 +158,8 @@ def parseStatementTransactions(transactions):
         result['noteArvoPvm'] = transaction[1] #Arvopäivä
         result['noteSum'] = transaction[2] #Määrä EUROA
         #for some reason notetypeid is in parenthesis
-        result['noteTypeId'] = transaction[3][1:-1] #Tapahtumalajikoodi
-        result['noteType'] = transaction[4] #Selitys
+        #result['noteTypeId'] = transaction[3][1:-1] #Tapahtumalajikoodi
+        result['noteTypeId'] = transaction[4] #Selitys
         #for some reason notetypeid is in parenthesis
         result['notePayerPayee'] = transaction[5][1:-1] #Saaja/Maksaja
         transaction[6] = transaction[6].strip()

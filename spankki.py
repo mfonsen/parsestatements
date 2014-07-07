@@ -261,8 +261,6 @@ def parseStatementTransactions(transactions):
 
                 result = m1.groupdict().copy()
                 
-                #skip detected noteType
-                result['noteType'] = str(matcher)
                 #save matcher for debugging
                 result['matcher'] = str(matcher)
                 
@@ -290,7 +288,7 @@ def parseStatementTransactions(transactions):
     #source: http://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
     #todo: http://docs.python.org/2/library/collections.html, http://stackoverflow.com/questions/5490078/python-counting-repeating-values-of-a-dictionary
     def search(name, list):
-        return [element for element in list if element.has_key('noteType') and element['noteType'] == name ]
+        return [element for element in list if element.has_key('noteTypeId') and element['noteTypeId'] == name ]
     
     def searchEmpty(list):
         return [element for element in list if not (element.has_key('noteType')) ]

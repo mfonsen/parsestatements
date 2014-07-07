@@ -28,7 +28,6 @@ def outputCsv(transactions, path):
         "noteArvoPvm",
         "noteSum",
         "noteTypeId",
-        "noteType",
         "notePayerPayee",
         #converted to iban, always empty: "noteTargetClassic",
         "noteTargetIban",
@@ -121,7 +120,7 @@ def printplus(obj):
 
 def report(transactions):
     def search(name, list):
-        return [element for element in list if element.has_key('noteType') and element['noteType'] == name ]
+        return [element for element in list if element.has_key('noteTypeId') and element['noteTypeId'] == name ]
 
     matchers = defaultdict(int)
     banks = defaultdict(int)
