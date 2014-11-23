@@ -288,10 +288,10 @@ def parseStatementTransactions(transactions):
     #source: http://stackoverflow.com/questions/8653516/python-list-of-dictionaries-search
     #todo: http://docs.python.org/2/library/collections.html, http://stackoverflow.com/questions/5490078/python-counting-repeating-values-of-a-dictionary
     def search(name, list):
-        return [element for element in list if element.has_key('noteTypeId') and element['noteTypeId'] == name ]
+        return [element for element in list if element.has_key('noteTypeId') and element['matcher'] == name ]
     
     def searchEmpty(list):
-        return [element for element in list if not (element.has_key('noteType')) ]
+        return [element for element in list if not (element.has_key('noteTypeId')) ]
     
 
     for matcher in iter(matchers):
